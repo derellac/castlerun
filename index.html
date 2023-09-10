@@ -3,8 +3,11 @@
 	<head>
 	<style>
 	  body {
-      margin:0px;
-      background-color:black;
+      margin: 0px;
+      background-color: black;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
     }
 
 	</style>
@@ -28,14 +31,31 @@
           var blocks = [];
           this.offset = 0;
           this.current_level = 0;
+          function Player() {
+            this.x = 0;
+            this.y = 0;
+            
+            this.draw = function(offset) {
+                raster = 20
+                ctx.fillStyle = "rgb(220,220,0)"
+                ctx.fillRect(canvas.width/raster*this.x, canvas.height/raster*this.y+offset*canvas.height, canvas.width/raster, canvas.height/raster)
+            }
+          }
+          this.player = new Player();
           function Block(x,y) {
             this.row = x;
             this.column = y;
+            this.color = Math.floor(Math.random() * 120)
 
             this.draw = function(offset) {
                 raster = 20
-                ctx.fillStyle = "rgb(120,120,120)"
+                ctx.fillStyle = "rgba("+this.color+","+this.color+","+this.color+", .9)";
+                ctx.strokeStyle = "rgba(120,220,120, .9)";
+                ctx.lineWidth = 2
+                ctx.beginPath();
+                ctx.roundRect(canvas.width/raster*this.row, canvas.height/raster*this.column+offset*canvas.height, canvas.width/raster, canvas.height/raster,10);
                 ctx.fillRect(canvas.width/raster*this.row, canvas.height/raster*this.column+offset*canvas.height, canvas.width/raster, canvas.height/raster)
+                ctx.stroke();
 
             }
           }
@@ -59,15 +79,17 @@
           this.draw_blocks = function() {
             blocks.forEach(block => block.draw(this.offset));
           }
+          this.draw_field = function() {
+            this.draw_blocks()
+            this.player.draw(this.offset)
+          }
           this.refresh = function() {
             clean()
-            this.draw_blocks()
+            this.draw_field()
           }
           this.update_offset = function() {
             this.offset = this.offset + 0.002 + this.current_level/1000
             if (this.offset > this.current_level) {
-              console.log(this.offset)
-              console.log(this.current_level)
               this.current_level = this.current_level + 1
               this.add_blocks(this.current_level)
             }
@@ -75,16 +97,33 @@
           
           this.start_moving = function() {
             setInterval(this.refresh.bind(this),100)
-            setInterval(this.update_offset.bind(this),10)
+            setInterval(this.update_offset.bind(this),100)
           
           }
+          
+          this.move_player = function(key) {
+            if (key.keyCode == '37') {
+               this.player.x-=1
+            }
+            if (key.keyCode == '38') {
+                this.player.y-=1
+            }
+            if (key.keyCode == '39') {
+               this.player.x+=1
+            }
+            if (key.keyCode == '40') {
+                this.player.y+=1
+            }
+          
+          }
+          document.onkeydown = this.move_player.bind(this);
         
         }
         
         t = new PlayingField()
         
         t.init_blocks()
-        t.draw_blocks()
+        t.draw_blocks()        
         t.start_moving()
 
       }
