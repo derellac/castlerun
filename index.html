@@ -1,7 +1,97 @@
 <!DOCTYPE html>
 <html lang="en-US">
 	<head>
+	<style>
+	  body {
+      margin:0px;
+      background-color:black;
+    }
+
+	</style>
 		<script>
+      window.onload = playGame
+      var temp
+      function playGame() {
+        this.canvas = document.getElementsByTagName("canvas").item(0)
+        this.ctx = canvas.getContext("2d")
+        this.canvas.width = window.innerWidth
+        this.canvas.height = window.innerHeight
+        
+        this.clean = function() {
+          ctx.fillStyle = "rgb(0, 0, 0)"
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+        
+        clean()
+        
+        function PlayingField() {
+          var blocks = [];
+          this.offset = 0;
+          this.current_level = 0;
+          function Block(x,y) {
+            this.row = x;
+            this.column = y;
+
+            this.draw = function(offset) {
+                raster = 20
+                ctx.fillStyle = "rgb(120,120,120)"
+                ctx.fillRect(canvas.width/raster*this.row, canvas.height/raster*this.column+offset*canvas.height, canvas.width/raster, canvas.height/raster)
+
+            }
+          }
+          this.init_blocks = function() {
+            blocks = []
+            for(var i = 0; i < 200; i++) {
+              raster = 20
+              x = Math.floor(Math.random() * raster)
+              y = Math.floor(Math.random() * raster)
+              blocks.push(new Block(x,y))
+            }
+          }
+          this.add_blocks = function(level) {
+            for(var i = 0; i < 200; i++) {
+              raster = 20
+              x = Math.floor(Math.random() * raster)
+              y = Math.floor(Math.random() * raster * (-level))
+              blocks.push(new Block(x,y))
+            }
+          }
+          this.draw_blocks = function() {
+            blocks.forEach(block => block.draw(this.offset));
+          }
+          this.refresh = function() {
+            clean()
+            this.draw_blocks()
+          }
+          this.update_offset = function() {
+            this.offset = this.offset + 0.002 + this.current_level/1000
+            if (this.offset > this.current_level) {
+              this.current_level = this.current_level + 1
+              this.add_blocks(this.current_level)
+            }
+          }
+          
+          this.start_moving = function() {
+            setInterval(this.refresh.bind(this),100)
+            setInterval(this.update_offset.bind(this),100)
+          
+          }
+        
+        }
+        
+        t = new PlayingField()
+        
+        t.init_blocks()
+        t.add_blocks(1)
+        t.draw_blocks()
+        t.start_moving()
+        
+        
+        
+        
+      
+      
+      }
       
     </script>
  		<meta charset="utf-8" />
