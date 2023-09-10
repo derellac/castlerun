@@ -52,7 +52,7 @@
             for(var i = 0; i < 200; i++) {
               raster = 20
               x = Math.floor(Math.random() * raster)
-              y = Math.floor(Math.random() * raster * (-level))
+              y = Math.floor(Math.random() * raster)-level*raster
               blocks.push(new Block(x,y))
             }
           }
@@ -66,6 +66,8 @@
           this.update_offset = function() {
             this.offset = this.offset + 0.002 + this.current_level/1000
             if (this.offset > this.current_level) {
+              console.log(this.offset)
+              console.log(this.current_level)
               this.current_level = this.current_level + 1
               this.add_blocks(this.current_level)
             }
@@ -73,7 +75,7 @@
           
           this.start_moving = function() {
             setInterval(this.refresh.bind(this),100)
-            setInterval(this.update_offset.bind(this),100)
+            setInterval(this.update_offset.bind(this),10)
           
           }
         
@@ -82,15 +84,9 @@
         t = new PlayingField()
         
         t.init_blocks()
-        t.add_blocks(1)
         t.draw_blocks()
         t.start_moving()
-        
-        
-        
-        
-      
-      
+
       }
       
     </script>
