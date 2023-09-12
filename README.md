@@ -1,5 +1,6 @@
 # castlerun
-HTML5 game created for the 2023 js13kGames contest [js13kGames](https://js13kgames.com/) 
+HTML5 game created for the 2023 js13kGames contest [js13kGames](https://js13kgames.com/).
+
 Source code is embedded in the index.html file.
 
 ## Game plot
